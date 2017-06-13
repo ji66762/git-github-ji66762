@@ -72,3 +72,4 @@ $mw	= function (Request $request,Response $response, $next) {
 	return $response;
 };
 
+$app->add($mw);
