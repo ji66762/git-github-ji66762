@@ -49,7 +49,7 @@ $app->get('/map[/{type}/{id}]', function (Request $request, Response $response, 
 	unset($result["total_cnt"]);
 	
 	return json_encode($result);
-})->add($mw);
+});
 
 #mongodb map write
 $app->post('/map/', function (Request $request, Response $response) {
