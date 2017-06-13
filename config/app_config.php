@@ -13,3 +13,5 @@ require _HOME_.'/vendor/autoload.php';
 #error handler
 $config	= [];
 $config['displayErrorDetails'] = true; #상세 에러
+$config['cookies.encrypt']	= true;
+$config['cookies.secret_key'] = base64_encode("ak12k14k124k124k");

@@ -4,6 +4,7 @@ if(!defined("_HOME_")) exit();
 use \Psr\Http\Message\ServerRequestInterface as Request;
 use \Psr\Http\Message\ResponseInterface as Response;
 
+
 #app ip check 
 $app->add(new RKA\Middleware\IpAddress());
 
@@ -59,5 +60,15 @@ $container['param_check']	= function($container){
 #검색 필드 추가
 $container['find_filed']	= function(){
 	return ['id', 'name', 'gu', 'tag'];
+};
+
+
+#auth middleware 
+$mw	= function (Request $request,Response $response, $next) {	
+	$header = $request->getHeaders();
+	if(!isset($header['HTTP_AUTHENTICATION'])) return $response->withJson(['error' => 'AUTHENTICATION false'], 403);
+
+	$response = $next($request, $response);
+	return $response;
 };
 

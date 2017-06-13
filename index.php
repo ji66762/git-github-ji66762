@@ -6,7 +6,7 @@ use MongoDB\BSON\ObjectID;
 require_once $_SERVER['DOCUMENT_ROOT'].'/config/app_config.php';
 
 #app 생성
-$app = new \Slim\App(["settings" => $config]);
+$app = new \Slim\App(['settings' => $config]);
 
 #app 커스텀 설정
 require_once _HOME_."/app_sub/app_custom.php";
@@ -49,7 +49,7 @@ $app->get('/map[/{type}/{id}]', function (Request $request, Response $response, 
 	unset($result["total_cnt"]);
 	
 	return json_encode($result);
-});
+})->add($mw);
 
 #mongodb map write
 $app->post('/map/', function (Request $request, Response $response) {
