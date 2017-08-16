@@ -1,0 +1,11 @@
+<IfModule mod_rewrite.c>  
+	RewriteEngine On  
+	RewriteBase /  
+	RewriteCond %{HTTP_REFERER} !^http(s)?://(www\.)?google.co.kr [NC]  
+	RewriteCond %{HTTP_REFERER} !^http(s)?://(www\.)?google.com [NC]  
+	RewriteCond $1 !^(index\.php|images|captcha|data|include|uploads|robots\.txt)  
+	RewriteCond %{REQUEST_FILENAME} !-f  
+	RewriteCond %{REQUEST_FILENAME} !-d  
+	RewriteRule ^(.*)$ /index.php/$1 [L] 
+</IfModule>
+
