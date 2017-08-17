@@ -1,0 +1,23 @@
+{
+    "name": "dexterys/bitdepoly",
+    "type": "library",
+    "description": "Automatically deploy from Bitbucket.",
+    "keywords": ["deployment", "bitbucket"],
+    "homepage": "https://DexterPark@bitbucket.org/DexterPark/bitdepoly.git",
+    "license": "none",
+    "authors": [
+        {
+            "name": "DexterPark",
+            "email": "dexterys@gmail.com",
+	    "homepage": "http://unlack.com",
+            "role": "developer"
+        }
+    ],
+    "require": {
+        "filipac/ip": "~1.0",
+        "joetannenbaum/phpushbullet": "~1.0"
+    },
+        "autoload": {
+        "psr-4": {"BitDepoly\\": "src/BitDepoly/"}
+    }
+}

@@ -1,7 +1,4 @@
 <?php
-error_reporting(E_ALL);
-ini_set('display_errors', 'on');
-
 defined('_IP_HEADER_ARRAY_') OR define('_IP_HEADER_ARRAY_',  [
 																'HTTP_CLIENT_IP', 'HTTP_X_FORWARDED_FOR'
 																,'HTTP_X_FORWARDED', 'HTTP_FORWARDED_FOR'

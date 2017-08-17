@@ -9,6 +9,7 @@ HTTP 인증
 200 : 성공
 400 : bad request 
 401 : 인증, 인가 실패
+403 : 권한 없음
 404 : 해당 리소스 없음
 500 : 서버 사이드 에러
 
@@ -22,6 +23,7 @@ error code 를 미리 설계 ex) 2000 ~ : 인증 관련, 3000 ~ : 주문 관련
 $app->add(new RKA\Middleware\IpAddress());
 
 #app run before run
+/*
 $app->add( function( Request $request,Response $response, callable $next ){
 	foreach(_IP_HEADER_ARRAY_ as $v){
 		if(getenv($v)){
@@ -36,13 +38,14 @@ $app->add( function( Request $request,Response $response, callable $next ){
 	defined('_CLIENT_IP_')  	OR define('_CLIENT_IP_', $client_ip, True);
 	return $next($request, $response);
 });
+*/
 
 #컨테이너 가져오기
 $container = $app->getContainer();
 
 #컨테이너에 custom 404 추가
 $container['notFoundHandler'] = function($container){
-	return function(Request $request,Response $response) use ($container) {
+	return function( $request, $response) use ($container) {
 		  return $container['response']
             ->withStatus(404)
             ->withHeader('Content-Type', 'text/html')
@@ -140,51 +143,77 @@ $mw	= function (Request $request,Response $response, $next) {
 	}
 };
 */
-$mw	= function (Request $request,Response $response, $next) {	
-
-	$authorization =  $request->getHeader('HTTP_AUTHORIZATION'); 	
-	if( !isset($authorization[0]) || empty($authorization[0]) ) return $response->withJson(['error' => _ERROR_MSG_['ENG']['403']], 403); 
+/*
+미들웨어 인증
+*/
+$mw	= function ( $request, $response, $next) {	
 	
-	$sp_auth		= explode(' ', $authorization[0]);
-	if(sizeof($sp_auth) != 2)  return $response->withJson(['error' => _ERROR_MSG_['ENG']['404']], 404); 
-	
-	$auth_key		= strtoupper($sp_auth[0]);
-	$auth_string	= $sp_auth[1];
-	
-	if( !in_array($auth_key, ['APITOKEN', 'BEARER', 'REFRESHTOKEN']) ) return $response->withJson(['error' => _ERROR_MSG_['ENG']['403']], 403); 
-
-	if( $auth_key == 'BEARER' ){
-		$requestUri		= $request->getHeader('REQUEST_URI');	
-		$requestMethod	= $request->getHeader('REQUEST_METHOD');
-		if ( $requestUri != '/login'  || $requestMethod != 'GET')  return $response->withJson(['error' => _ERROR_MSG_['ENG']['404']], 404); 
+	foreach(_IP_HEADER_ARRAY_ as $v){
+		if(getenv($v)){
+			$client_ip = getenv($v);
+			if( mb_strpos($client_ip, ',', 0) > -1){
+				$sp = explode(',',  $client_ip);
+				$client_ip = $sp[0];
+			}
+			break;
+		}
 	}
-	else if($auth_key == 'REFRESHTOKEN'){
-		$requestUri		= $request->getHeader('REQUEST_URI');	
-		$requestMethod	= $request->getHeader('REQUEST_METHOD');
-		if ( $requestUri != '/request_token'  || $requestMethod != 'POST')  return $response->withJson(['error' => _ERROR_MSG_['ENG']['404']], 404); 	
-	}
-	else if($auth_key == 'APITOKEN'){
-		if( $requestUri == '/login' ) return $response->withJson(['error' => _ERROR_MSG_['ENG']['404']], 404); 
-		
-		$oauth  = customClass/Member();
-		$info	= $oauth->find_info(['api_token' => $auth_string]);
-		
-		if( !isset( $info['code'] ) || $info['code'] != 1 )  {
-			$err_code	= $info['code'] == 99 ? 404 : 403;
-			$err_msg	= _ERROR_MSG_['ENG'][$err_code];
-			return $response->withJson(['error' =>$err_msg], $err_code); 
+	defined('_CLIENT_IP_')  	OR define('_CLIENT_IP_', $client_ip, True);
+	
+	if(_PATH_ != 'webhook'){
+	
+		$authorization =  $request->getHeader('HTTP_AUTHORIZATION'); 	
+		if( !isset($authorization[0]) || empty($authorization[0]) ) return $response->withJson(['error' => _ERROR_MSG_['ENG']['403']], 403); 
+
+		$sp_auth		= explode(' ', $authorization[0]);
+		if(sizeof($sp_auth) != 2)  return $response->withJson(['error' => _ERROR_MSG_['ENG']['404']], 404); 
+
+		$auth_key		= strtoupper($sp_auth[0]);
+		$auth_string	= $sp_auth[1];
+
+		if( !in_array($auth_key, ['APITOKEN', 'BEARER', 'REFRESHTOKEN']) ) return $response->withJson(['error' => _ERROR_MSG_['ENG']['403']], 403); 
+
+		if( $auth_key == 'BEARER' ){
+			$requestUri		= $request->getHeader('REQUEST_URI');	
+			$requestMethod	= $request->getHeader('REQUEST_METHOD');
+			if ( $requestUri != '/login'  || $requestMethod != 'GET')  return $response->withJson(['error' => _ERROR_MSG_['ENG']['404']], 404); 
+		}
+		else if($auth_key == 'REFRESHTOKEN'){
+			$requestUri		= $request->getHeader('REQUEST_URI');	
+			$requestMethod	= $request->getHeader('REQUEST_METHOD');
+			if ( $requestUri != '/request_token'  || $requestMethod != 'POST')  return $response->withJson(['error' => _ERROR_MSG_['ENG']['404']], 404); 	
+		}
+		else if($auth_key == 'APITOKEN'){
+			if( $requestUri == '/login' ) return $response->withJson(['error' => _ERROR_MSG_['ENG']['404']], 404); 
+
+			$oauth  = customClass/Member();
+			$info	= $oauth->find_info(['api_token' => $auth_string]);
+
+			if( !isset( $info['code'] ) || $info['code'] != 1 )  {
+				$err_code	= $info['code'] == 99 ? 404 : 403;
+				$err_msg	= _ERROR_MSG_['ENG'][$err_code];
+				return $response->withJson(['error' =>$err_msg], $err_code); 
+			}
+
+			$time			= time();
+			if( $info['expire'] >= $time ) return $response->withJson(['error' => _ERROR_MSG_['ENG']['401']], 401); 		
+
+			unset($info, $oauth);
+		}
+		else{
+			return $response->withJson(['error' => _ERROR_MSG_['ENG']['404']], 404); 	
 		}
 		
-		$time			= time();
-		if( $info['expire'] >= $time ) return $response->withJson(['error' => _ERROR_MSG_['ENG']['401']], 401); 		
-		
-		unset($info, $oauth);
 	}
 	else{
-		return $response->withJson(['error' => _ERROR_MSG_['ENG']['404']], 404); 	
+		$ip_array = array('10.1.21.229');
+		if(!in_array(_CLIENT_IP_, $ip_array)) return $response->withJson(['error' => _ERROR_MSG_['ENG']['404']], 404); 	
+		
+			//if()
 	}
-
-	$next($request, $response);
+	
+	return $next($request, $response);
+	//$next($request, $response);
 };
 
-$app->add($mw);
+//$app->add($mw);

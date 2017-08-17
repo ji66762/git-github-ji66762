@@ -1,6 +1,7 @@
 <?php
-use \Psr\Http\Message\ServerRequestInterface as Request;
-use \Psr\Http\Message\ResponseInterface as Response;
+error_reporting(E_ALL);
+ini_set('display_errors', 'on');
+
 use MongoDB\BSON\ObjectID;
 
 require_once $_SERVER['DOCUMENT_ROOT'].'/config/app_config.php';
@@ -12,13 +13,13 @@ $app = new \Slim\App(['settings' => $config]);
 require_once _HOME_."/app_sub/app_custom.php";
 
 #인덱스 접근 금지 (404)
-$app->any('/', function(Request $request, Response $response)  {
+$app->any('/', function( $request,  $response)  {
 	$this->logger->addInfo(_CLIENT_IP_." : ./index.php");
 	return $this->get("notFoundHandler")($request, $response);
 });
 
-if( is_file(_HOME_.'/'._PATH_.'/'._PATH_.'.php')){
-	require_once _HOME_.'/'._PATH_.'/'._PATH_.'.php';
+if( is_file(_HOME_.'/controller/'._PATH_.'.php')){
+	require_once _HOME_.'/controller/'._PATH_.'.php';
 }
 else{
 	header('Status: 404', TRUE, 404);
