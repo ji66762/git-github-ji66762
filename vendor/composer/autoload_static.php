@@ -7,12 +7,15 @@ namespace Composer\Autoload;
 class ComposerStaticInit9db61beb0b1bd8b9dcca960ed09b251e
 {
     public static $files = array (
+        'c964ee0ededf28c96ebd9db5099ef910' => __DIR__ . '/..' . '/guzzlehttp/promises/src/functions_include.php',
+        'a0edc8309cc5e1d60e3047b5df6b7052' => __DIR__ . '/..' . '/guzzlehttp/psr7/src/functions_include.php',
         '253c157292f75eb38082b5acb06f3f01' => __DIR__ . '/..' . '/nikic/fast-route/src/functions.php',
+        '37a3dc5111fe8f707ab4c132ef1dbc62' => __DIR__ . '/..' . '/guzzlehttp/guzzle/src/functions_include.php',
         '5255c38a0faeba867671b61dfda6d864' => __DIR__ . '/..' . '/paragonie/random_compat/lib/random.php',
-        '3a37ebac017bc098e9a86b35401e7a68' => __DIR__ . '/..' . '/mongodb/mongodb/src/functions.php',
         'a7cee959d5f14eb7484e7f8e7182e03d' => __DIR__ . '/..' . '/geoip/geoip/src/geoip.inc',
         '8cf74b4cf02ad0591c257dcfb7edbc8d' => __DIR__ . '/..' . '/geoip/geoip/src/geoipcity.inc',
         'd114bd5194e69687495c9150ff6be780' => __DIR__ . '/..' . '/geoip/geoip/src/timezone.php',
+        '3a37ebac017bc098e9a86b35401e7a68' => __DIR__ . '/..' . '/mongodb/mongodb/src/functions.php',
     );
 
     public static $prefixLengthsPsr4 = array (
@@ -34,6 +37,7 @@ class ComposerStaticInit9db61beb0b1bd8b9dcca960ed09b251e
             'Psr\\Log\\' => 8,
             'Psr\\Http\\Message\\' => 17,
             'Psr\\Container\\' => 14,
+            'PHPushbullet\\' => 13,
         ),
         'M' => 
         array (
@@ -44,9 +48,19 @@ class ComposerStaticInit9db61beb0b1bd8b9dcca960ed09b251e
         array (
             'Interop\\Container\\' => 18,
         ),
+        'G' => 
+        array (
+            'GuzzleHttp\\Psr7\\' => 16,
+            'GuzzleHttp\\Promise\\' => 19,
+            'GuzzleHttp\\' => 11,
+        ),
         'F' => 
         array (
             'FastRoute\\' => 10,
+        ),
+        'B' => 
+        array (
+            'BitDepoly\\' => 10,
         ),
     );
 
@@ -79,6 +93,10 @@ class ComposerStaticInit9db61beb0b1bd8b9dcca960ed09b251e
         array (
             0 => __DIR__ . '/..' . '/psr/container/src',
         ),
+        'PHPushbullet\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/joetannenbaum/phpushbullet/src',
+        ),
         'Monolog\\' => 
         array (
             0 => __DIR__ . '/..' . '/monolog/monolog/src/Monolog',
@@ -91,9 +109,25 @@ class ComposerStaticInit9db61beb0b1bd8b9dcca960ed09b251e
         array (
             0 => __DIR__ . '/..' . '/container-interop/container-interop/src/Interop/Container',
         ),
+        'GuzzleHttp\\Psr7\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/guzzlehttp/psr7/src',
+        ),
+        'GuzzleHttp\\Promise\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/guzzlehttp/promises/src',
+        ),
+        'GuzzleHttp\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/guzzlehttp/guzzle/src',
+        ),
         'FastRoute\\' => 
         array (
             0 => __DIR__ . '/..' . '/nikic/fast-route/src',
+        ),
+        'BitDepoly\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/dexterys/bitdepoly/src/BitDepoly',
         ),
     );
 
@@ -103,6 +137,13 @@ class ComposerStaticInit9db61beb0b1bd8b9dcca960ed09b251e
             'Pimple' => 
             array (
                 0 => __DIR__ . '/..' . '/pimple/pimple/src',
+            ),
+        ),
+        'F' => 
+        array (
+            'Filipac\\Ip' => 
+            array (
+                0 => __DIR__ . '/..' . '/filipac/ip/src',
             ),
         ),
     );
